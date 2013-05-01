@@ -67,15 +67,18 @@ class MainWindow(QtGui.QMainWindow):
         
     def initCenterWidget(self):
         self.centerWidget = QtGui.QTreeWidget(self)
+        self.centerWidget.setRootIsDecorated(False) # no decoration
         self.setCentralWidget(self.centerWidget)
-        strList = ("Download/Name", "Progress", "Percentage", "Size","Est.time", "Speed")
+        strList = ("Download/Name", "Speed", "Percentage", "Size","Est.time", "Progress")
         self.centerWidget.setHeaderLabels(strList)
 
-        strList = ("ubuntu.iso", "------>===", "60%", "4G", "3min", "200kb/s")
+        strList = ("ubuntu.iso", "230kb/s", "60%", "4G", "3min", "------------------------------>==============")
         item = QtGui.QTreeWidgetItem(self.centerWidget, strList, 1)
+        item.setIcon(0, QtGui.QIcon(":/images/down.png"))
         self.centerWidget.addTopLevelItem(item)
-        strList = ("archlinux.iso", "------>===", "60%", "4G", "3min","300kb/s")
+        strList = ("archlinux.iso", "300kb/s", "60%", "4G", "3min","------------------------------>==============")
         item = QtGui.QTreeWidgetItem(self.centerWidget, strList, 1)
+        item.setIcon(0, QtGui.QIcon(":/images/down.png"))
         self.centerWidget.addTopLevelItem(item)
 
         
