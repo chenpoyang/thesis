@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo '<!DOCTYPE RCC><RCC version="1.0">' > mdown.qrc
+echo "<qresource>" >> mdown.qrc
+
+for str in `find . -name '*.png' -print`
+do
+	nx_str=`echo $str | sed 's:./::'`
+	echo "    <file>"$nx_str"</file>" >> mdown.qrc
+done
+
+echo "</qresource>" >> mdown.qrc
+echo "</RCC>" >> mdown.qrc
+
+pyrcc4 mdown.qrc -o mdown_rc.py
