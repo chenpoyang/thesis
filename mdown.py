@@ -1,20 +1,26 @@
 import os
 import sys
 import mdown_rc
+import urldlg
 from PyQt4 import QtCore, QtGui
 
 class MainWindow(QtGui.QMainWindow):
+    
+    urlDlg = None
+    
     def __init__(self):
-	super(MainWindow, self).__init__()
+        super(MainWindow, self).__init__()
 
         self.initMenu()
         self.initToolBar()
         self.initCenterWidget()
         self.initStatusBar()
+        self.initConnection()
         
-	self.setWindowTitle("download device")
-	self.resize(800, 600)
-	
+        
+        self.setWindowTitle("download device")
+        self.resize(800, 600)
+    
     def initMenu(self):
         bar = self.menuBar()
 
@@ -80,8 +86,9 @@ class MainWindow(QtGui.QMainWindow):
         item = QtGui.QTreeWidgetItem(self.centerWidget, strList, 1)
         item.setIcon(0, QtGui.QIcon(":/images/down.png"))
         self.centerWidget.addTopLevelItem(item)
-
         
+        self.urlDlg = urldlg.UrlDlg()
+
     def initStatusBar(self):
         statusBar = self.statusBar()
         downLabel = QtGui.QLabel("Downloads: %d of %d, %d running")
@@ -93,12 +100,15 @@ class MainWindow(QtGui.QMainWindow):
         statusBar.addWidget(downLabel)
         statusBar.addWidget(speedLabel)
         
-
-    def initLocSize():
-	pass
-    def initConnection():
-	pass
-
+    def showUrlDlg(self):
+        self.urlDlg.show()
+        
+    def downFile(self, url):
+        print "a new download thread:" + url
+        
+    def initConnection(self):
+        self.actNew.triggered.connect(self.showUrlDlg)
+        self.urlDlg.downloadSignal.connect(self.downFile)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
