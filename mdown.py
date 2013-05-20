@@ -2,6 +2,7 @@ import os
 import sys
 import mdown_rc
 import urldlg
+import dthread
 from PyQt4 import QtCore, QtGui
 
 class MainWindow(QtGui.QMainWindow):
@@ -78,14 +79,15 @@ class MainWindow(QtGui.QMainWindow):
         strList = ("Download/Name", "Speed", "Percentage", "Size","Est.time", "Progress")
         self.centerWidget.setHeaderLabels(strList)
 
-        strList = ("ubuntu.iso", "230kb/s", "60%", "4G", "3min", "------------------------------>==============")
-        item = QtGui.QTreeWidgetItem(self.centerWidget, strList, 1)
-        item.setIcon(0, QtGui.QIcon(":/images/down.png"))
-        self.centerWidget.addTopLevelItem(item)
-        strList = ("archlinux.iso", "300kb/s", "60%", "4G", "3min","------------------------------>==============")
-        item = QtGui.QTreeWidgetItem(self.centerWidget, strList, 1)
-        item.setIcon(0, QtGui.QIcon(":/images/down.png"))
-        self.centerWidget.addTopLevelItem(item)
+#         strList = ("ubuntu.iso", "230kb/s", "60%", "4G", "3min", "------------------------------>==============")
+#         item = QtGui.QTreeWidgetItem(self.centerWidget, strList, 1)
+#         item.setIcon(0, QtGui.QIcon(":/images/down.png"))
+#         self.centerWidget.addTopLevelItem(item)
+#         
+#         strList = ("archlinux.iso", "300kb/s", "60%", "4G", "3min","------------------------------>==============")
+#         item = QtGui.QTreeWidgetItem(self.centerWidget, strList, 1)
+#         item.setIcon(0, QtGui.QIcon(":/images/down.png"))
+#         self.centerWidget.addTopLevelItem(item)
         
         self.urlDlg = urldlg.UrlDlg()
 
@@ -104,6 +106,14 @@ class MainWindow(QtGui.QMainWindow):
         self.urlDlg.show()
         
     def downFile(self, url):
+        dthrd = dthread.DThread(self, url) #connect centerWidget's item
+        
+        strList = ("archlinux.iso", "300kb/s", "60%", "4G", "3min","------------------------------>==============")
+        item = QtGui.QTreeWidgetItem(self.centerWidget, strList, 1)
+        item.setIcon(0, QtGui.QIcon(":/images/down.png"))
+        self.centerWidget.addTopLevelItem(item)
+        
+        dthrd.run()
         print "a new download thread:" + url
         
     def initConnection(self):

@@ -24,6 +24,9 @@ class DThread(QtCore.QThread):
     remoteFile = None
     isFtp = None
     conn = None
+    #filename, speed, percentage, Size, Est.time, Progress
+    strList = None
+    fsize = None
     
     def __init__(self, parent = None, _url = None):
         super(DThread, self).__init__()
@@ -57,13 +60,13 @@ class DThread(QtCore.QThread):
                     self.conn.cwd(dir)
             
             self.conn.voidcmd("TYPE I")
-            fsize = self.conn.size(dirs[-1])
+            self.fsize = self.conn.size(dirs[-1])
             if os.path.exists(self.localFileName):
                 lsize = os.stat(self.localFileName).st_size
             else:
                 lsize = 0
                 
-            if lsize >= fsize:
+            if lsize >= self.fsize:
                 return
                 
             res = self.conn.transfercmd("RETR " + dirs[-1], lsize)
@@ -82,7 +85,12 @@ class DThread(QtCore.QThread):
             self.conn.quit()
             
         else:
-            self.conn.request('GET', '/index.html')
+            #get file size
+            self.conn.request('HEAD', self.remoteFile)
+            res = self.conn.getresponse()
+            self.fsize = int(res.getheader('content-length'))
+            
+            self.conn.request('GET', self.remoteFile)
             res = self.conn.getresponse()
             fd = open(self.localFileName, "ab")
             while True:
@@ -168,9 +176,3 @@ class DThread(QtCore.QThread):
     
     def restoreInfoForPause(self):
         print "restore"
-        
-if __name__ == '__main__':
-    app = QtCore.QCoreApplication(sys.argv)
-    window = DThread(app, "http://127.0.0.1/index.html")
-    window.run()
-    sys.exit(app.exec_())
